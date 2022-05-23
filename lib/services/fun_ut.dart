@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'str_ut.dart';
 
@@ -7,9 +8,28 @@ class FunUt {
   //static const pageBtnGap = EdgeInsets.all(15); 
   ///constant
   static const systemError = "System Error, Please Contact Administrator.";
-  static const double fontSize = 16;
+  //static const double fontSize = 16;
   
+  static const select = '--請選擇--';
   static const notEmpty = '不可空白。';
+
+  //label, text & input, consider status
+  static double textFontSize = 16;
+  static Color textColorOk = Colors.black;
+  static Color textColorSkip = Colors.grey;
+
+  //label, also for inputDecoration
+  static TextStyle labelStyle = TextStyle(
+      fontSize: textFontSize,
+      color: Colors.grey,
+  );
+
+  //label, also for inputDecoration
+  static TextStyle decoreStyle = const TextStyle(
+      fontSize: 15,
+      color: Colors.grey,
+      height: 0.8,
+  );
 
   ///indicate error
   static const preError = 'E:';
@@ -39,7 +59,6 @@ class FunUt {
     var dir = await getApplicationDocumentsDirectory();
     dirApp = dir.path + '/';
     dirTemp = dirApp + '_temp/';
-
   }
 
 } //class

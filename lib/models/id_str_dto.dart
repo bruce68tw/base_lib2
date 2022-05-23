@@ -7,7 +7,7 @@ class IdStrDto {
   ///convert json to model, static for be parameter !!
   static IdStrDto fromJson(Map json){
     return IdStrDto(
-      id : json['Id'],
+      id : json['Id'].toString(), //may be int
       str : json['Str'],
     );
   }

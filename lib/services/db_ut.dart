@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/id_str_dto.dart';
@@ -9,7 +10,7 @@ class DbUt {
   static Database? _db;  // = initDbAsync() as Database;
   static int? _version;
   static String? _dbName;
-  static List<String>? _createSqls;
+  static List<String> _createSqls = [];
 
   static init(String dbName, int version, List<String> createSqls) {
     _dbName = dbName;
@@ -29,13 +30,26 @@ class DbUt {
       join(await getDatabasesPath(), _dbName!),
       version: _version!,
       onCreate: (db, version) {
-        for (var sql in _createSqls!){
+        for (var sql in _createSqls){
           db.execute(sql);
         }
       },    
     );
 
     return _db!;
+  }
+
+  // re-create table 
+  static Future<void> reTableAsync(String table) async {
+    //drop table
+    var db = await getDbAsync();
+    await db.execute("Drop Table if exists $table");
+
+    //create table
+    var sql = _createSqls.firstWhereOrNull((a) => a.contains(' $table'));
+    if (sql != null) {
+      await db.execute(sql);
+    }
   }
 
   /// insert
