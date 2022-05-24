@@ -46,4 +46,9 @@ class DateUt {
       //return dt2;
   }
   
+  static String timeToStr(TimeOfDay time){
+    return time.hour.toString() + ' : ' + 
+        time.minute.toString();
+  }
+
 } //class

@@ -109,7 +109,7 @@ order by name
     widgets.add(const SizedBox(height: 10));
 
     for(var row in _rows){
-      for(var prop in row!.entries){
+      for(var prop in row.entries){
         widgets.add(WG.labelText(prop.key+' : ', prop.value.toString()));
       }
       widgets.add(WG.divider(15));

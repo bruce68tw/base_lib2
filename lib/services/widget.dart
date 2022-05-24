@@ -18,7 +18,7 @@ class WG {
   */
 
   static Text getText(String text, [bool status = true]) {
-    return Text(text, style:_textStyle(status));
+    return Text(text, style:textStyle(status));
   }
 
   static Text getLabel(String label) {
@@ -46,7 +46,7 @@ class WG {
   }
 
   ///input field style, consider status
-  static TextStyle _textStyle([bool status = true]) {    
+  static TextStyle textStyle([bool status = true]) {    
     return TextStyle(
       color: status ? FunUt.textColorOk : FunUt.textColorSkip,
       fontSize: FunUt.textFontSize,
@@ -54,7 +54,7 @@ class WG {
   }
 
   //return label
-  static InputDecoration _inputDecore(String label) {
+  static InputDecoration inputDecore(String label) {
     return InputDecoration(
       labelText: label,
       labelStyle: FunUt.decoreStyle,
@@ -84,7 +84,7 @@ class WG {
 
   ///link button
   ///VoidCallback is need, onPressed on ()=> before function !!
-  static Widget linkBtn(String text, [VoidCallback? fnOnClick]) {
+  static Widget textBtn(String text, [VoidCallback? fnOnClick]) {
     //var status = (fnOnClick != null);
     //var color = status
     //  ? Colors.blue : Colors.grey;
@@ -96,7 +96,7 @@ class WG {
 
   ///create TextButton
   ///VoidCallback is need, onPressed on ()=> before function !!
-  static Widget textBtn(String text, [VoidCallback? fnOnClick]) {
+  static Widget elevBtn(String text, [VoidCallback? fnOnClick]) {
     //var status = (fnOnClick != null);
     //var color = status
     //  ? Colors.blue : Colors.grey;
@@ -106,18 +106,37 @@ class WG {
     ); 
   }
 
+  static TableRow tableRow(String label, Widget widget){
+    return TableRow(children: [
+      TableCell(
+        verticalAlignment: TableCellVerticalAlignment.middle,
+        child: WG.getLabel(label)
+      ),
+      TableCell(
+        verticalAlignment: TableCellVerticalAlignment.middle,
+        child: widget
+      )
+    ]);
+  }
+
   //=== input field below ===
   static Widget itext(String label, TextEditingController ctrl,  
-    {bool status = true, bool required = false, int maxLines = 1, 
+    {bool status = true, bool required = false, int maxLines = 1, bool isPwd = false, 
     Function? fnValid, Function? fnOnChange}){
     
     return TextFormField(
       controller: ctrl,
       readOnly: !status,
-      style: _textStyle(status),
-      decoration: _inputDecore(label),
+      style: textStyle(status),
+      decoration: (label == '') ? null : inputDecore(label),
       minLines: 1,
       maxLines: maxLines,
+
+      //for password input
+      obscureText: isPwd,
+      enableSuggestions: !isPwd,
+      autocorrect: !isPwd,
+
       onChanged: (value){
         (fnOnChange == null) ? null : fnOnChange(value);          
       },
@@ -134,11 +153,13 @@ class WG {
     {bool status = true, bool required = false, Function? fnValid}){
 
     return DropdownButtonFormField<String>(
-      value: (value == null) ? '' : value.toString(),
+      value: (value == null || value.toString() == '') 
+        ? rows.first.id : value.toString(),
       //hint: label,
       //readOnly: !status,
-      style: _textStyle(status),
-      decoration: _inputDecore(label),
+      style: textStyle(status),
+      //decoration: inputDecore(label),
+      decoration: (label == '') ? null : inputDecore(label),
       items: rows.map((IdStrDto row) {
         return DropdownMenuItem<String>(
           child: Text(row.str),
@@ -196,8 +217,9 @@ class WG {
     return TextFormField(
       controller: ctrl,
       readOnly: !status,
-      style: _textStyle(status),
-      decoration: _inputDecore(label),
+      style: textStyle(status),
+      //decoration: inputDecore(label),
+      decoration: (label == '') ? null : inputDecore(label),
       onTap: () async {
         //_nowDate = value;
         // Below line stops keyboard from appearing
@@ -224,14 +246,18 @@ class WG {
   }
   
   /*
-  static Widget itime(BuildContext context, TextEditingController ctrl, 
-    String label, Function fnCallback,
-    [bool required = false, String? label2]){
+  */
+  static Widget itime(BuildContext context, String label, 
+    TextEditingController ctrl, Function fnCallback,
+    {bool required = false}){
 
     var value = StrUt.isEmpty(ctrl.text) 
       ? TimeOfDay.now() : DateUt.strToTime(ctrl.text);
     return TextFormField(
       controller: ctrl,
+      style: WG.textStyle(),
+      //decoration: WG.inputDecore(label),
+      decoration: (label == '') ? null : inputDecore(label),
       onTap: () async {
         //TimeOfDay.now()
         //_nowDate = value;
@@ -241,17 +267,14 @@ class WG {
         );
 
         if (time != null) {
-          ctrl.text = Xp.timeStr(time);
+          ctrl.text = DateUt.timeToStr(time);
         }
 
         //callback
-        fnCallback();
+        fnCallback(time);
       },
-      style: WG.inputStyle(),
-      decoration: WG.inputLabel(label),
     );
   }
-  */
 
   /// checkbox 
   /// fnOnChange : must (value){} !!
