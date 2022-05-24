@@ -20,6 +20,11 @@ class CrudRead {
   ///constructor
   //CrudRead() {
   //}
+  
+  Future<Map<String, dynamic>?> getPageBySqlAsync(String sql, DtDto dtDto) async {
+    var readDto = ReadDto(readSql: sql);
+    return await getPageAsync(readDto, dtDto);
+  }
 
   Future<Map<String, dynamic>?> getPageAsync(ReadDto readDto, DtDto dtDto) async {
       //#region 1.check input

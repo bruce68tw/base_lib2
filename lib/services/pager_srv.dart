@@ -106,8 +106,11 @@ class PagerSrv {
     );
   }
 
-  Widget getWidget(PagerDto pagerDto) {
-    var rowCount = pagerDto.recordsFiltered;
+  Widget getWidgetByDto(PagerDto pagerDto) {
+    return getWidget(pagerDto.recordsFiltered);
+  }
+
+  Widget getWidget(int rowCount) {
     if (rowCount <= 0) return Container();
     
     _setTotalRows(rowCount);
