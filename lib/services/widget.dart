@@ -119,6 +119,14 @@ class WG {
     ]);
   }
 
+  static TableRow itext2(String label, TextEditingController ctrl,  
+    {bool status = true, bool required = false, int maxLines = 1, bool isPwd = false, 
+    Function? fnValid, Function? fnOnChange}){
+    return tableRow(label, itext('', ctrl, status: status, 
+      required: required, maxLines: maxLines, isPwd: isPwd,
+      fnValid: fnValid, fnOnChange: fnOnChange));
+  }
+
   //=== input field below ===
   static Widget itext(String label, TextEditingController ctrl,  
     {bool status = true, bool required = false, int maxLines = 1, bool isPwd = false, 
@@ -146,6 +154,12 @@ class WG {
           fnValid(value);          
       },
     );
+  }
+
+  static TableRow iselect2(String label, dynamic value, List<IdStrDto> rows, Function fnOnChange,
+    {bool status = true, bool required = false, Function? fnValid}){
+    return tableRow(label, iselect('', value, rows, fnOnChange,
+    status:status, required:required, fnValid:fnValid));
   }
 
   /// select option(dropdown)
@@ -207,6 +221,12 @@ class WG {
   }
   */
 
+  static TableRow idate2(BuildContext context, String label, TextEditingController ctrl,  
+    Function fnOnChange, {bool status = true, bool required = false, bool oneYearRange = true}){
+    return tableRow(label, idate(context, '', ctrl,  
+    fnOnChange, status:status, required:required, oneYearRange:oneYearRange));
+  }
+
   /// date input
   /// fnOnChange : must be (value)=>
   static Widget idate(BuildContext context, String label, TextEditingController ctrl,  
@@ -244,12 +264,17 @@ class WG {
       },
     );
   }
-  
+
+  static TableRow itime2(BuildContext context, String label, 
+    TextEditingController ctrl, Function fnCallback, {bool required = false}){
+    return tableRow(label, itime(context, '', 
+    ctrl, fnCallback, required:required));
+  }
+
   /*
   */
   static Widget itime(BuildContext context, String label, 
-    TextEditingController ctrl, Function fnCallback,
-    {bool required = false}){
+    TextEditingController ctrl, Function fnCallback, {bool required = false}){
 
     var value = StrUt.isEmpty(ctrl.text) 
       ? TimeOfDay.now() : DateUt.strToTime(ctrl.text);
@@ -276,9 +301,16 @@ class WG {
     );
   }
 
+  static TableRow icheck2(String label, bool checked, Function fnOnChange, 
+    {bool status = true}) {
+    return tableRow(label, icheck('', checked, fnOnChange, 
+    status:status));
+  }
+
   /// checkbox 
   /// fnOnChange : must (value){} !!
-  static Widget icheck(String label, bool checked, Function fnOnChange, {bool status = true}) {
+  static Widget icheck(String label, bool checked, Function fnOnChange, 
+    {bool status = true}) {
 
     /*
     //design color
