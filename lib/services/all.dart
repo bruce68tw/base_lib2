@@ -18,4 +18,5 @@ export 'sql_ut.dart';
 export 'page_ut.dart';
 export 'object_ut.dart';
 export 'log_ut.dart';
+export 'log_time_ut.dart';
 export 'crud_read.dart';
