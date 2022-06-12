@@ -14,13 +14,13 @@ class FunUt {
   static const notEmpty = '不可空白。';
 
   //label, text & input, consider status
-  static double textFontSize = 16;
+  static double fontSize = 18;
   static Color textColorOk = Colors.black;
   static Color textColorSkip = Colors.grey;
 
   //label, also for inputDecoration
   static TextStyle labelStyle = TextStyle(
-      fontSize: textFontSize,
+      fontSize: fontSize,
       color: Colors.grey,
   );
 

@@ -49,7 +49,7 @@ class WG {
   static TextStyle textStyle([bool status = true]) {    
     return TextStyle(
       color: status ? FunUt.textColorOk : FunUt.textColorSkip,
-      fontSize: FunUt.textFontSize,
+      fontSize: FunUt.fontSize,
     );
   }
 
@@ -64,6 +64,10 @@ class WG {
   ///gap for padding or margin
   static EdgeInsets gap(double pixel) {
     return EdgeInsets.all(pixel);
+  }
+
+  static Widget gap2([double width = 5]) {
+    return SizedBox(width: width);
   }
 
   /// get divider for list view

@@ -46,6 +46,14 @@ class FileUt {
     return FunUt.dirApp + fileName;
   }
 
+  /// get file extension in lowercase  without '.'
+  static String getExt(String fileName) {
+    var pos = fileName.lastIndexOf('.');
+    return (pos < 0)
+      ? ''
+      : fileName.substring(pos + 1).toLowerCase();
+  }
+
   ///json to image file ext
   static String jsonToImageExt(Map<String, dynamic>? json, [String fid='FileName']) {
     if (json == null || StrUt.isEmpty(json[fid])) return '';

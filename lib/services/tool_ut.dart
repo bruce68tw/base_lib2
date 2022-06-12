@@ -48,7 +48,7 @@ class ToolUt {
     var okBtn = TextButton(
       child: const Text('Yes'),
       onPressed: () {
-        closePopup(context);
+        closeForm(context);
         if (onYes != null) onYes();
       },
     );
@@ -102,11 +102,11 @@ class ToolUt {
   //close waiting msg
   static void closeWait(BuildContext? context) {
     if (context == null) return;
-    closePopup(context);
+    closeForm(context);
   }
 
   //close a popup dialog
-  static void closePopup(BuildContext? context) {
+  static void closeForm(BuildContext? context) {
     if (context == null) return;
     Navigator.pop(context, true);
   }
