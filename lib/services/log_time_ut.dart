@@ -11,8 +11,8 @@ class LogTimeUt {
 
   //log time
   static int getMiniSec([bool reset = false]){
-      var now = DateTime.now();
-      var result = now.difference(_start!).inMilliseconds;
+      //var now = DateTime.now();
+      var result = DateTime.now().difference(_start!).inMilliseconds;
       if (reset) init();      
       return result;
   }
