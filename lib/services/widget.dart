@@ -25,6 +25,20 @@ class WG {
     return Text(label, style:FunUt.labelStyle);
   }
 
+  /// get label with color
+  static Text getLabel2(String label, Color color) {
+    return Text(label, style:TextStyle(
+      fontSize: FunUt.fontSize,
+      color: color
+    ));    
+  }
+
+  static Widget centerText(String text) {
+    return Center(
+      child: Text(text, style:textStyle())
+    );
+  }
+
   ///display label & text
   static Widget labelText(String label, String text, [Widget? divider]) {
     var isHori = (divider == null);
@@ -66,9 +80,11 @@ class WG {
     return EdgeInsets.all(pixel);
   }
 
+  /*
   static Widget gap2([double width = 5]) {
     return SizedBox(width: width);
   }
+  */
 
   /// get divider for list view
   /// @height line height
@@ -110,7 +126,8 @@ class WG {
     ); 
   }
 
-  static TableRow tableRow(String label, Widget widget){
+  /// tablerow with label string & widget
+  static TableRow tableLabelWidget(String label, Widget widget){
     return TableRow(children: [
       TableCell(
         verticalAlignment: TableCellVerticalAlignment.middle,
@@ -123,10 +140,37 @@ class WG {
     ]);
   }
 
+  /// tablerow with 2 widgets
+  static TableRow tableRow2(Widget widget1, Widget widget2){
+    return TableRow(children: [
+      TableCell(
+        verticalAlignment: TableCellVerticalAlignment.middle,
+        child: widget1
+      ),
+      TableCell(
+        verticalAlignment: TableCellVerticalAlignment.middle,
+        child: widget2
+      )
+    ]);
+  }
+
+  /// required label
+  static Widget reqLabel(String label, [bool required = true]){
+    return required
+      ? Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            getLabel2('*', Colors.red),
+            getLabel(label),
+          ]
+        )
+      : getLabel(label);
+  }
+
   static TableRow itext2(String label, TextEditingController ctrl,  
     {bool status = true, bool required = false, int maxLines = 1, bool isPwd = false, 
     Function? fnValid, Function? fnOnChange}){
-    return tableRow(label, itext('', ctrl, status: status, 
+    return tableRow2(reqLabel(label, required), itext('', ctrl, status: status, 
       required: required, maxLines: maxLines, isPwd: isPwd,
       fnValid: fnValid, fnOnChange: fnOnChange));
   }
@@ -162,7 +206,7 @@ class WG {
 
   static TableRow iselect2(String label, dynamic value, List<IdStrDto> rows, Function fnOnChange,
     {bool status = true, bool required = false, Function? fnValid}){
-    return tableRow(label, iselect('', value, rows, fnOnChange,
+    return tableRow2(reqLabel(label, required), iselect('', value, rows, fnOnChange,
     status:status, required:required, fnValid:fnValid));
   }
 
@@ -171,8 +215,10 @@ class WG {
     {bool status = true, bool required = false, Function? fnValid}){
 
     return DropdownButtonFormField<String>(
-      value: (value == null || value.toString() == '') 
-        ? rows.first.id : value.toString(),
+      isExpanded: true,
+      value: rows.isEmpty ? '' :
+        (value == null || value.toString() == '') ? rows.first.id :
+        value.toString(),
       //hint: label,
       //readOnly: !status,
       style: textStyle(status),
@@ -184,7 +230,9 @@ class WG {
           value: row.id,
         );
       }).toList(),
-      onChanged: (value2)=> fnOnChange(value2),
+      onChanged: status 
+        ? (value2)=> fnOnChange(value2)
+        : null,
       validator: (value2) {
         return (required && StrUt.isEmpty(value2)) ? FunUt.notEmpty :
           (fnValid == null) ? null : 
@@ -193,41 +241,9 @@ class WG {
     );
   }
 
-  /*
-  //fnOnChange無法使用name parameter !!
-  static Widget zz_iselect(InputDecoration inputLabel, String value, List<IdStrDto> rows, 
-    [bool required = false, Function? fnOnChange]){
-
-    if (value == ''){
-      value = rows.first.id;
-    }
-
-    return InputDecorator(
-      //decoration: const InputDecoration(border: OutlineInputBorder()),
-      decoration: inputLabel,
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<String>(
-          value: value,
-          isDense: true,
-          isExpanded: true,
-          onChanged: (String? newValue){
-            if (fnOnChange != null) fnOnChange(newValue);
-          },
-          items: rows.map((IdStrDto row) {
-            return DropdownMenuItem<String>(
-              child: Text(row.str),
-              value: row.id,
-            );
-          }).toList(),
-        ),
-      ),
-    );
-  }
-  */
-
   static TableRow idate2(BuildContext context, String label, TextEditingController ctrl,  
     Function fnOnChange, {bool status = true, bool required = false, bool oneYearRange = true}){
-    return tableRow(label, idate(context, '', ctrl,  
+    return tableRow2(reqLabel(label, required), idate(context, '', ctrl,  
     fnOnChange, status:status, required:required, oneYearRange:oneYearRange));
   }
 
@@ -244,70 +260,71 @@ class WG {
       style: textStyle(status),
       //decoration: inputDecore(label),
       decoration: (label == '') ? null : inputDecore(label),
-      onTap: () async {
-        //_nowDate = value;
-        // Below line stops keyboard from appearing
-        FocusScope.of(context).requestFocus(FocusNode());
-        // Show Date Picker Here
-        //await _openDate(context);
-        final DateTime? date = await showDatePicker(
-          context: context,
-          initialDate: StrUt.isEmpty(ctrl.text) 
-            ? DateTime.now() : DateUt.csToDt(ctrl.text)!,
-          firstDate: today.add(Duration(days: (-1) * days)), 
-          lastDate: today.add(Duration(days: days)),
-        );
+      onTap: status
+        ? () async {
+          //_nowDate = value;
+          // Below line stops keyboard from appearing
+          FocusScope.of(context).requestFocus(FocusNode());
+          // Show Date Picker Here
+          //await _openDate(context);
+          final DateTime? date = await showDatePicker(
+            context: context,
+            initialDate: StrUt.isEmpty(ctrl.text) 
+              ? DateTime.now() : DateUt.csToDt(ctrl.text)!,
+            firstDate: today.add(Duration(days: (-1) * days)), 
+            lastDate: today.add(Duration(days: days)),
+          );
 
-        if (date != null) {
-          ctrl.text = DateFormat(DateUt.dateCsFormat).format(date);
-          fnOnChange(date);
+          if (date != null) {
+            ctrl.text = DateFormat(DateUt.dateCsFormat).format(date);
+            fnOnChange(date);
+          }
+
+          //ctrl.text = DateFormat('yyyy/MM/dd').format(_nowDate);
+          //setState(() {});
         }
-
-        //ctrl.text = DateFormat('yyyy/MM/dd').format(_nowDate);
-        //setState(() {});
-      },
+        : null
     );
   }
 
   static TableRow itime2(BuildContext context, String label, 
-    TextEditingController ctrl, Function fnCallback, {bool required = false}){
-    return tableRow(label, itime(context, '', 
-    ctrl, fnCallback, required:required));
+    TextEditingController ctrl, Function fnCallback, {bool status = true, bool required = false}){
+    return tableRow2(reqLabel(label, required), itime(context, '', 
+    ctrl, fnCallback, status: status, required:required));
   }
 
-  /*
-  */
+  /// hour minutes
   static Widget itime(BuildContext context, String label, 
-    TextEditingController ctrl, Function fnCallback, {bool required = false}){
+    TextEditingController ctrl, Function fnCallback, {bool status = true, bool required = false}){
 
     var value = StrUt.isEmpty(ctrl.text) 
       ? TimeOfDay.now() : DateUt.strToTime(ctrl.text);
     return TextFormField(
       controller: ctrl,
+      readOnly: !status,
       style: WG.textStyle(),
       //decoration: WG.inputDecore(label),
       decoration: (label == '') ? null : inputDecore(label),
-      onTap: () async {
-        //TimeOfDay.now()
-        //_nowDate = value;
-        final time = await showTimePicker(
-          context: context, 
-          initialTime: value
-        );
+      onTap: status
+        ? () async {
+          //TimeOfDay.now()
+          final time = await showTimePicker(
+            context: context, 
+            initialTime: value
+          );
 
-        if (time != null) {
-          ctrl.text = DateUt.timeToStr(time);
+          if (time != null) ctrl.text = DateUt.timeToStr(time);
+
+          //callback
+          fnCallback(time);
         }
-
-        //callback
-        fnCallback(time);
-      },
+        : null
     );
   }
 
   static TableRow icheck2(String label, bool checked, Function fnOnChange, 
     {bool status = true}) {
-    return tableRow(label, icheck('', checked, fnOnChange, 
+    return tableLabelWidget(label, icheck('', checked, fnOnChange, 
     status:status));
   }
 
@@ -349,6 +366,28 @@ class WG {
         }))),
         getText(label, status),
     ]);
+  }
+
+  static Widget iradio(List<dynamic> labelValues, dynamic value, Function fnOnChange, 
+    {bool status = true, bool isCenter = false}) {
+
+    List<Widget> widgets = [];
+    for(var i=0; i<labelValues.length; i+=2){
+      widgets.add(Radio<dynamic>(
+        value: labelValues[i+1],
+        groupValue: value,
+        onChanged: (val)=> fnOnChange(val)
+      ));
+      widgets.add(WG.getText(labelValues[i], status));
+    }
+
+    return Row(
+      mainAxisAlignment: isCenter
+        ? MainAxisAlignment.center
+        : MainAxisAlignment.start,
+      children: widgets
+    );
+    
   }
 
 } //class

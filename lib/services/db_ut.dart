@@ -59,7 +59,7 @@ class DbUt {
     var count = await db.insert(table, map,
       conflictAlgorithm: ConflictAlgorithm.fail
     );
-    return (count == 1);
+    return (count > 0);
   }
 
   /// update
@@ -76,15 +76,15 @@ class DbUt {
     return (count == 1);
   }
 
-  /// delete
-  static Future<bool> deleteAsync(String table, String where, List<Object> args) async {      
+  /// delete one/many rows
+  static Future<int> deleteAsync(String table, String where, [List<Object>? args]) async {      
     //db.delete return rows affected
     var db = await getDbAsync();
     var count = await db.delete(table, 
         where: where,
         whereArgs: args,
     );
-    return (count == 1);
+    return count;
   }
 
   //query below

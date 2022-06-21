@@ -84,10 +84,10 @@ class FileUt {
   /// zip files of folder (into temp folder)
   /// return empty if no files
   static String zipDir(String fromDir) {
+    if (!FileUt.dirExist(fromDir)) return '';
+    
     var files = Directory(fromDir).listSync();
-    if (files.isEmpty){
-      return '';
-    }
+    if (files.isEmpty) return '';
     
     var toPath = FunUt.dirTemp + getDirName(fromDir) + '.zip';
     var encoder = ZipFileEncoder();

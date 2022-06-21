@@ -1,17 +1,9 @@
-//1.dart sdk
 import 'dart:io';
-//import 'dart:developer';
 import 'dart:convert';
 import 'dart:typed_data';
-//2.flutter sdk
-//import 'package:camera/camera.dart';
-//import 'package:dio/dio.dart' as dio;
-//import 'package:dio/dio.dart' as d2;
 import 'package:flutter/widgets.dart';
-//3.3rd package
 import 'package:archive/archive.dart';
 import 'package:http/http.dart' as http;
-//4.base_lib
 import 'package:base_lib/all.dart';
 import 'package:http_parser/http_parser.dart';
 
@@ -27,6 +19,10 @@ class HttpUt {
   //get api uri
   //json must be <String, String> or cause error !!
   static Uri _apiUri(String action, [Map<String, dynamic>? json]) {
+    if (FunUt.logHttpUrl){
+      LogUt.info(FunUt.apiServer + '/' + action);
+    }
+
     return FunUt.isHttps
         ? Uri.https(FunUt.apiServer, action, json)
         : Uri.http(FunUt.apiServer, action, json);
@@ -39,30 +35,32 @@ class HttpUt {
   }
   */
 
-  static Future getStrAsync(BuildContext? context, String action,
-      bool jsonArg, [Map<String, dynamic>? json, Function? fnOk, File? file]) async {
-    await _rpcAsync(context, action, jsonArg, false, json, fnOk, file);
+  static Future<void> getStrAsync(BuildContext context, String action,
+      bool jsonArg, Map<String, dynamic> json, Function fnOk, 
+      [File? file, bool showWait = true]) async {
+    await _getRespResultAsync(context, action, jsonArg, false, json, fnOk, file, showWait);
   }
 
-  static Future getJsonAsync(
-      BuildContext? context, String action, bool jsonArg, 
-      [Map<String, dynamic>? json, Function? fnOk, File? file]) async {
-    await _rpcAsync(context, action, jsonArg, true, json, fnOk, file);
+  static Future<void> getJsonAsync(BuildContext context, String action, bool jsonArg, 
+      Map<String, dynamic> json, Function fnOk, 
+      [File? file, bool showWait = true]) async {
+    await _getRespResultAsync(context, action, jsonArg, true, json, fnOk, file, showWait);
   }
 
-  static Future<Image?> getImageAsync(BuildContext? context, 
-      String action, [Map<String, String>? json]) async {
-    var resp = await _getRespAsync(context, action, false, json);
+  static Future<Image?> getImageAsync(BuildContext context, 
+      String action, Map<String, String> json, [bool showWait = true]) async {
+    var resp = await _getRespAsync(context, action, false, json, null, showWait);
     return (resp == null) ? null : Image.memory(resp.bodyBytes);
   }
 
-  static Future uploadZipAsync(BuildContext? context, String action,
-      File file, [Map<String, dynamic>? json, bool jsonOut = false, Function? fnOk]) async {
-    await _rpcAsync(context, action, false, jsonOut, json, fnOk, file);
+  static Future<void> uploadZipAsync(BuildContext context, String action,
+      File file, Map<String, dynamic> json, bool jsonOut, 
+      Function fnOk, [bool showWait = true]) async {
+    await _getRespResultAsync(context, action, false, jsonOut, json, fnOk, file, showWait);
   }
 
   ///download and unzip
-  static Future saveUnzipAsync(BuildContext context, String action, 
+  static Future<void> saveUnzipAsync(BuildContext context, String action, 
       Map<String, String> json, String dirSave) async {
 
     //create folder if need
@@ -72,7 +70,6 @@ class HttpUt {
     }
 
     //if no file, download it
-    //var action = isBatch ? 'GetBatchImage' : 'GetStepImage';
     var bytes = await _getFileBytesAsync(context, action, json);
     if (bytes != null) {
       var files = ZipDecoder().decodeBytes(bytes);
@@ -96,7 +93,7 @@ class HttpUt {
   ///called by: _rpcAsync, getFileBytesAsync
   ///file不為空白時, jsonArg必須為false, 因為後端無法以object接受參數
   static Future<http.Response?> _getRespAsync(BuildContext? context, String action, 
-    [bool jsonArg = false, Map<String, dynamic>? json, File? file]) async {
+    [bool jsonArg = false, Map<String, dynamic>? json, File? file, bool showWait = true]) async {
         
     String body = '';
     String conType;
@@ -116,10 +113,12 @@ class HttpUt {
     };
 
     //2.add token if existed
-    if (!StrUt.isEmpty(_token)) headers['Authorization'] = 'Bearer ' + _token;
+    if (StrUt.notEmpty(_token)) headers['Authorization'] = 'Bearer ' + _token;
 
     //3.show waiting
-    ToolUt.openWait(context);
+    if (showWait){
+      ToolUt.openWait(context);
+    }
 
     //4.http request
     http.Response? resp;
@@ -133,84 +132,16 @@ class HttpUt {
           .timeout(const Duration(seconds: 30));
       } else {
 
-        /*
-      var dio2 = d2.Dio(d2.BaseOptions(
-        baseUrl: 'http://192.168.1.103:5001/api',
-        //contentType: 'multipart/form-data',
-        connectTimeout: 5000, //5s
-        receiveTimeout: 5000,
-      ));
-      dio2.options.headers.addAll({'Content-Type': 'application/json'});
-      //dio.options.headers['Authorization'] = '$token';
-      //dio2.options.baseUrl = _apiUri(action).path;
-      //dio.options.headers = <Header Json>;
-      var formData = d2.FormData.fromMap({'Id':'id1', 'WorkNo':'work no1'});
-      //formData.fields.addAll();
-      //formData.add("user_id", userProfile.userId);
-      //formData.add("name", userProfile.name);
-      //formData.add("email", userProfile.email);
-      //formData.files.add("user_picture", new UploadFileInfo(photoFile, 'image0.jpg'));
-      var file2a = d2.MultipartFile.fromFileSync(file.path);
-          //filename: 'temp.jpg',
-          //contentType: MediaType('image', 'jpg'));
-
-      formData.files.add(MapEntry('file', file2a));
-
-      d2.Response resp2 = await dio2.post(
-        '/Project/SendAudit',
-        data: formData,
-      );
-
-      var aa = 'aa';
-*/
-
-      /*
-      Map<String, String> headers = {
-        'Content-Type': 'multipart/form-data',        
-      };
-      */
-
-        //arg = {'Id':'id1', 'WorkNo':'work no1'};
         var request = http.MultipartRequest('POST', _apiUri(action, arg));
-        //var request = http.MultipartRequest('POST', _apiUri(action));
         request.headers.addAll(headers);
 
-        /*
-        request.files.add(
-          http.MultipartFile.fromBytes(
-            'row',
-            utf8.encode(jsonEncode({'Id':'id1', 'WorkNo':'work no1'})),
-            contentType: MediaType(
-              'application',
-              'json',
-              {'charset': 'utf-8'},
-            ),
-          ),
-        );
-        */
-
         //add text fields
-        //request.fields["text_field"] = text;
-        //request.headers['Content-Type'] = 'application/x-www-form-urlencoded';
-        //request.headers['Content-Type'] = 'multipart/form-data';
-        //request.headers['Content-Type'] = 'application/json';
-        //add file
-        //var file2 = await http.MultipartFile.fromPath('file', file.path);
         var file2 = await http.MultipartFile.fromPath('file', file.path,
-          //filename: 'temp.jpg',
-          //contentType: MediaType('image', 'jpg'));
           contentType: MediaType('zip', 'applicaiton/zip'));
           
-        //var file2 = await http.MultipartFile.fromPath('file', file.path, 
-        //  filename: 'temp.zip', contentType: MediaType('zip','application/zip'));
         request.files.add(file2);
-        //request.fields.addAll({'Id':'id1', 'WorkNo':'work no1'});
-        //if (json != null){
-        //  request.fields.addAll(JsonUt.dynamicToString(json)!);
-        //}
         var stream = await request.send();
         resp = await http.Response.fromStream(stream);        
-
       }
     /*
     } on TimeoutException {
@@ -218,20 +149,24 @@ class HttpUt {
       return null;
     */
     } catch (e) {
-      LogUt.error('Error: $e');
+      LogUt.error(e.toString());
     } finally {	
       //close waiting
-      ToolUt.closeWait(context);
+      if (showWait){
+        ToolUt.closeWait(context);
+      }
     }
 
     return resp;
   }
 
-  static Future _rpcAsync(BuildContext? context, String action, bool jsonArg, 
-      bool jsonOut, [Map<String, dynamic>? json, Function? fnOk, File? file]) async {
+  //get response result 
+  static Future<void> _getRespResultAsync(BuildContext context, String action, bool jsonArg, 
+      bool jsonOut, Map<String, dynamic> json, Function fnOk, 
+      [File? file, bool showWait = true]) async {
         
     //get response & check error
-    var resp = await _getRespAsync(context, action, jsonArg, json, file);
+    var resp = await _getRespAsync(context, action, jsonArg, json, file, showWait);
     if (resp == null) {
       ToolUt.msg(context, '無法存取遠端資料 !!');
       return;
@@ -247,27 +182,25 @@ class HttpUt {
     var str = utf8.decode(resp.bodyBytes);
     var json2 = StrUt.toJson(str, showLog:false);
     var error = (json2 == null)
-      ? _strToMsg(str)
-      : _resultToMsg(json2);
+      ? _getStrError(str)
+      : _getJsonError(json2);
     if (error != ''){
       ToolUt.msg(context, error);
       return;
     }
 
     //callback
-    if (fnOk != null){
-      fnOk(jsonOut ? json2 : str);
-    }
+    fnOk(jsonOut ? json2 : str);
   }
 
   ///result to error msg
-  static String _resultToMsg(dynamic result){
+  static String _getJsonError(dynamic result){
     return (result['ErrorMsg'] == null)
-        ? '' : _strToMsg(result['ErrorMsg']);
+        ? '' : result['ErrorMsg'];
   }
 
   ///string to error msg
-  static String _strToMsg(String str){
+  static String _getStrError(String str){
       return StrUt.isEmpty(str) ? '' :
         (str.substring(0, 2) == FunUt.preError) ? str.substring(2) :
         '';

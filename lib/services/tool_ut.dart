@@ -5,7 +5,7 @@ import 'log_ut.dart';
 //static class, cannot use _Fun
 class ToolUt {
   //show msg box
-  static void msg(BuildContext? context, String info, [Function? onOk]) {
+  static void msg(BuildContext? context, String info, [Function? fnOk]) {
     if (context == null){
       LogUt.error(info);
       return;
@@ -15,10 +15,9 @@ class ToolUt {
     var okBtn = TextButton(
       child: const Text('OK'),
       onPressed: (){
-        if (onOk == null){
-          Navigator.pop(context);
-        } else {
-          onOk();
+        Navigator.pop(context);
+        if (fnOk != null){
+          fnOk();
         } 
     });
 
@@ -106,9 +105,9 @@ class ToolUt {
   }
 
   //close a popup dialog
-  static void closeForm(BuildContext? context) {
+  static void closeForm(BuildContext? context, [dynamic returnValue]) {
     if (context == null) return;
-    Navigator.pop(context, true);
+    Navigator.pop(context, returnValue);
   }
 
   //open a main form
@@ -123,6 +122,12 @@ class ToolUt {
         MaterialPageRoute(builder: (context) => form),
       );
     }
+  }
+
+  static dynamic openFormAsync(BuildContext context, Widget form) async {
+    return await Navigator.push(context,
+      MaterialPageRoute(builder: (context) => form)
+    );
   }
   
   /*
