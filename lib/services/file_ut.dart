@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:archive/archive_io.dart';
+import 'package:path/path.dart';
 
 import 'fun_ut.dart';
 import 'str_ut.dart';
@@ -82,22 +83,25 @@ class FileUt {
   }
 
   /// zip files of folder (into temp folder)
-  /// return empty if no files
-  static String zipDir(String fromDir) {
-    if (!FileUt.dirExist(fromDir)) return '';
+  /// return file list, empty if no files
+  static List<String>? zipDir(String fromDir, String toPath) {
+    if (!FileUt.dirExist(fromDir)) return null;
     
     var files = Directory(fromDir).listSync();
-    if (files.isEmpty) return '';
+    if (files.isEmpty) return null;
     
-    var toPath = FunUt.dirTemp + getDirName(fromDir) + '.zip';
+    //var toPath = FunUt.dirTemp + getDirName(fromDir) + '.zip';
     var encoder = ZipFileEncoder();
     encoder.create(toPath);
 
+    List<String> result = [];
     for(var file in files){
-      encoder.addFile(File(file.path));
+      var path = file.path;
+      encoder.addFile(File(path));
+      result.add(basename(path));
     }
     encoder.close();
-    return toPath;
+    return result;
   }
 
   static String getDirName(String dir) {

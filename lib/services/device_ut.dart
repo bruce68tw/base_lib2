@@ -34,8 +34,8 @@ class DeviceUt {
       var lat = pos.latitude.toString();
       var long = pos.longitude.toString();
       if (tailLen != null){
-        lat = lat.substring(0, lat.indexOf('.') + tailLen + 1);
-        long = long.substring(0, long.indexOf('.') + tailLen + 1);
+        lat = _cutTail(lat, '.', tailLen);
+        long = _cutTail(long, '.', tailLen);
       }
       return GpsDto(longitude: long, latitude: lat);
     } else {
@@ -43,5 +43,13 @@ class DeviceUt {
     }
   }
 
+  static String _cutTail(String source, String find, int tailLen) {
+    var pos = source.indexOf(find);
+    if (pos < 0) return source;
+
+    return (source.substring(pos).length <= tailLen) 
+      ? source
+      : source.substring(0, pos + tailLen + 1);
+  }
 
 } //class

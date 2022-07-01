@@ -54,7 +54,7 @@ class HttpUt {
   }
 
   static Future<void> uploadZipAsync(BuildContext context, String action,
-      File file, Map<String, dynamic> json, bool jsonOut, 
+      File? file, Map<String, dynamic> json, bool jsonOut, 
       Function fnOk, [bool showWait = true]) async {
     await _getRespResultAsync(context, action, false, jsonOut, json, fnOk, file, showWait);
   }

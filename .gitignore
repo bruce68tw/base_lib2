@@ -3,3 +3,7 @@
 android/
 build/
 ios/
+.flutter-plugins*
+.flutter-plugins
+.metadata
+.packages
