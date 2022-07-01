@@ -6,8 +6,9 @@ import 'fun_ut.dart';
 class ListUt {
 
   //json to string
-  static String toStr(List<String> list) {
-    return list.join(',');
+  static String toStr(List<String>? list) {
+    return (list == null)
+      ? '' : list.join(',');
   }
 
   static void selectAddEmpty(List<IdStrDto> rows) {
