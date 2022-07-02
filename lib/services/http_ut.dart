@@ -35,6 +35,8 @@ class HttpUt {
   }
   */
 
+  /// get str
+  /// if jsonArg=false, json must be <String, String> !!
   static Future<void> getStrAsync(BuildContext context, String action,
       bool jsonArg, Map<String, dynamic> json, Function fnOk, 
       [File? file, bool showWait = true]) async {
