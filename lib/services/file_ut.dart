@@ -47,12 +47,24 @@ class FileUt {
     return FunUt.dirApp + fileName;
   }
 
-  /// get file extension in lowercase  without '.'
-  static String getExt(String fileName) {
+  static String getName(String filePath) {
+    return basename(filePath);
+  }
+
+  static String getStem(String filePath) {
+    var fileName = basename(filePath);
     var pos = fileName.lastIndexOf('.');
     return (pos < 0)
+      ? fileName
+      : fileName.substring(0, pos);
+  }
+
+  /// get file extension in lowercase  without '.'
+  static String getExt(String filePath) {
+    var pos = filePath.lastIndexOf('.');
+    return (pos < 0)
       ? ''
-      : fileName.substring(pos + 1).toLowerCase();
+      : filePath.substring(pos + 1).toLowerCase();
   }
 
   ///json to image file ext

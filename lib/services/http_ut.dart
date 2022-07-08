@@ -52,7 +52,10 @@ class HttpUt {
   static Future<Image?> getImageAsync(BuildContext context, 
       String action, Map<String, String> json, [bool showWait = true]) async {
     var resp = await _getRespAsync(context, action, false, json, null, showWait);
-    return (resp == null) ? null : Image.memory(resp.bodyBytes);
+    //檢查回傳image是否有效
+    //後端return null時, bytes length < 10000(暫時 !!)
+    return (resp == null || resp.bodyBytes.length < 10000) 
+      ? null : Image.memory(resp.bodyBytes);
   }
 
   static Future<void> uploadZipAsync(BuildContext context, String action,

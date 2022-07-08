@@ -302,7 +302,7 @@ class WG {
     return TextFormField(
       controller: ctrl,
       readOnly: !status,
-      style: WG.textStyle(),
+      style: textStyle(status),
       //decoration: WG.inputDecore(label),
       decoration: (label == '') ? null : inputDecore(label),
       onTap: status

@@ -13,3 +13,7 @@ path_provider_linux=D:\\flutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\path_p
 path_provider_macos=D:\\flutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider_macos-2.0.4\\
 path_provider_windows=D:\\flutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\path_provider_windows-2.0.4\\
 sqflite=D:\\flutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\sqflite-2.0.2+1\\
+video_player=D:\\flutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\video_player-2.4.2\\
+video_player_android=D:\\flutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\video_player_android-2.3.4\\
+video_player_avfoundation=D:\\flutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\video_player_avfoundation-2.3.4\\
+video_player_web=D:\\flutterSDK\\.pub-cache\\hosted\\pub.dartlang.org\\video_player_web-2.0.10\\
