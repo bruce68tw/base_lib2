@@ -61,7 +61,7 @@ class CrudRead {
               sqlDto.from + " " +
               sqlDto.where +
               group;
-          var row = await DbUt.getMapAsync(sql, _sqlArgs); //for log carrier
+          var row = await DbUt.getJsonAsync(sql, _sqlArgs); //for log carrier
           if (row == null) {
             return {
               //'draw': dtDto.draw,
@@ -88,7 +88,7 @@ class CrudRead {
 
       //#region 5.get page rows 
       sql = SqlUt.dtoToSql(sqlDto, dtDto.start, dtDto.length);
-      var rows = await DbUt.getMapsAsync(sql, _sqlArgs);
+      var rows = await DbUt.getJsonsAsync(sql, _sqlArgs);
       //#endregion
 
   //lab_exit:

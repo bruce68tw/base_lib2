@@ -94,14 +94,14 @@ class DbUt {
     return count ?? 0;
   }
 
-  static Future<Map<String, dynamic>?> getMapAsync(String sql, [List<dynamic>? args]) async {
+  static Future<Map<String, dynamic>?> getJsonAsync(String sql, [List<dynamic>? args]) async {
     var db = await getDbAsync();
     var rows = await db.rawQuery(sql, (args == null || args.isEmpty) ? null : args);
     return (rows.isEmpty)
       ? null : rows[0];
   }
 
-  static Future<List<Map<String, dynamic>>> getMapsAsync(String sql, [List<dynamic>? args]) async {
+  static Future<List<Map<String, dynamic>>> getJsonsAsync(String sql, [List<dynamic>? args]) async {
     var db = await getDbAsync();
     return await db.rawQuery(sql, (args == null || args.isEmpty) ? null : args);
   }

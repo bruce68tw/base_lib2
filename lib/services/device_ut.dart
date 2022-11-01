@@ -1,6 +1,6 @@
 //import 'package:device_info/device_info.dart';
 import 'package:geolocator/geolocator.dart';
-
+import 'package:airplane_mode_checker/airplane_mode_checker.dart';
 import '../models/gps_dto.dart';
 
 //static class, cannot use _Fun
@@ -30,12 +30,19 @@ class DeviceUt {
         }
       }
 
-      var pos = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      //高精度會使用高耗能
+      var pos = await isAirplaneModeAsync()
+        ? await Geolocator.getLastKnownPosition()
+        : await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
+      if (pos == null){
+        return GpsDto(error: 'Airplane mode ON !!');
+      }
+
       var lat = pos.latitude.toString();
       var long = pos.longitude.toString();
       if (tailLen != null){
-        lat = _cutTail(lat, '.', tailLen);
-        long = _cutTail(long, '.', tailLen);
+        lat = _gpsCutTail(lat, '.', tailLen);
+        long = _gpsCutTail(long, '.', tailLen);
       }
       return GpsDto(longitude: long, latitude: lat);
     } else {
@@ -43,13 +50,19 @@ class DeviceUt {
     }
   }
 
-  static String _cutTail(String source, String find, int tailLen) {
+  static String _gpsCutTail(String source, String find, int tailLen) {
     var pos = source.indexOf(find);
     if (pos < 0) return source;
 
     return (source.substring(pos).length <= tailLen) 
       ? source
       : source.substring(0, pos + tailLen + 1);
+  }
+
+  /// 是否開啟飛航模式
+  static Future<bool> isAirplaneModeAsync() async {
+    var status = await AirplaneModeChecker.checkAirplaneMode();
+    return (status == AirplaneModeStatus.on);
   }
 
 } //class

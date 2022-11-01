@@ -328,41 +328,24 @@ class WG {
     status:status));
   }
 
-  /// checkbox 
+  /// checkbox, 裡面使用sizeBox會很不好點擊 !1 
   /// fnOnChange : must (value){} !!
   static Widget icheck(String label, bool checked, Function fnOnChange, 
     {bool status = true}) {
 
-    /*
-    //design color
-    Color getColor(Set<MaterialState> states) {
-      
-      //const Set<MaterialState> interactiveStates = <MaterialState>{
-      //  MaterialState.pressed,
-      //  MaterialState.hovered,
-      //  MaterialState.focused,
-      //};
-
-      //if (states.any(interactiveStates.contains)) {
-      //  return Colors.blue;
-      //}
-      //return Colors.red;
-      
-      return Colors.grey;
-    }
-    */
-
     return Row(
       children: [     
         Padding(
-          padding: const EdgeInsets.only(top: 15, bottom: 15, right: 10),
-          child: SizedBox(height: 24.0, width: 24.0,
+          padding: const EdgeInsets.only(top: 5, bottom: 5, right: 0, left:0),
+          child: Transform.scale(
+            scale: 1.5,
             child: Checkbox(
               //checkColor: Colors.white,
               //fillColor: MaterialStateProperty.resolveWith(getColor),
               value: checked,
+              materialTapTargetSize: MaterialTapTargetSize.padded,  //增加點擊範圍
               onChanged: (bool? value) {
-                fnOnChange(value);
+                fnOnChange(value);        
         }))),
         getText(label, status),
     ]);

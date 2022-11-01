@@ -54,7 +54,7 @@ order by name
     //get order string from primary key if need
     if (_tableSql.isEmpty || _tableSql[_table] == null){
       var sql = "select name, type from pragma_table_info('$_table') where pk";
-      var rows = await DbUt.getJsonsAsync(sql);
+      var rows = await DbUt.getMapsAsync(sql);
       var order = rows.map((a)=> a['name']).toList().join(',');
       if (order == ''){
         ToolUt.msg(context, 'Primary Key 不存在。');
