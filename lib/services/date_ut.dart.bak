@@ -51,17 +51,4 @@ class DateUt {
         time.minute.toString();
   }
 
-  //parse datetime string to 2 input ctrl
-  static void strToCtrls(String? date, TextEditingController dateCtrl, TextEditingController timeCtrl){
-    if (StrUt.isEmpty(date)){
-      dateCtrl.text = '';
-      timeCtrl.text = '';
-    } else {
-      var pos = date!.indexOf(' ');
-      //var cols = date!.split(' ');
-      dateCtrl.text = date.substring(0, pos);
-      timeCtrl.text = date.substring(pos + 1);
-    }
-  }
-
 } //class

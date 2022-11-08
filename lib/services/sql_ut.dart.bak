@@ -3,7 +3,7 @@ import 'str_ut.dart';
 
 class SqlUt {
 
-  //static const _sql = "select {0} {1} limit {2},{3}";
+  static const _sql = "select {0} {1} limit {2},{3}";
 
   //convert sql string to model 
   static SqlDto? sqlToDto(String sql, bool useSquare){

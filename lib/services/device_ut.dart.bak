@@ -1,5 +1,4 @@
 //import 'package:device_info/device_info.dart';
-import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:airplane_mode_checker/airplane_mode_checker.dart';
 import '../models/gps_dto.dart';
@@ -65,13 +64,5 @@ class DeviceUt {
     var status = await AirplaneModeChecker.checkAirplaneMode();
     return (status == AirplaneModeStatus.on);
   }
-
-  static double getWidth(BuildContext context) {
-    return MediaQuery.of(context).size.width;
-  }
-  static double getHeight(BuildContext context) {
-    return MediaQuery.of(context).size.height;
-  }
-
 
 } //class

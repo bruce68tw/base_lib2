@@ -10,12 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  airplane_mode_checker: ^1.0.2
   archive: ^3.1.5
   camera: ^0.10.0
   crypto: ^3.0.1
   dio: ^4.0.6
   encrypt: ^5.0.1
-  flutter_riverpod: ^1.0.3
+  #flutter_riverpod: ^1.0.3
   geolocator: ^9.0.1
   http: ^0.13.3
   image: ^3.1.3

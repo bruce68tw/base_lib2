@@ -79,20 +79,13 @@ class FileUt {
   }
 
   /// delete files in directory
-  static deleteDirFiles(String dirPath) {
-    var dir = Directory(dirPath);
+  static deleteDirFiles(String fromDir) {
+    var dir = Directory(fromDir);
     if(!dir.existsSync()) return;
-    
+
     var files = dir.listSync();
     for(var file in files){
       file.deleteSync();
-    }
-  }
-
-  static deleteDir(String dirPath) {
-    var dir = Directory(dirPath);
-    if (dir.existsSync()) {
-      dir.deleteSync(recursive: true);
     }
   }
 
