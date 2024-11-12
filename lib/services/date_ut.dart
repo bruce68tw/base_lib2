@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -10,11 +12,15 @@ class DateUt {
   static const dtCsFormat2 = 'yyyy/MM/dd HH:mm';
   static const dateCsFormat = 'yyyy/MM/dd';
 
+  /// return yyyy/MM/dd hh:mm:ss
+  static String format(String dts) {
+    var dt = DateFormat(dtCsFormat).parse(dts);
+    return DateFormat(dtCsFormat).format(dt);
+  }
+
   /// return yyyy/MM/dd hh:mm
   static String format2(String dts) {
-    //var format = 'yyyy-MM-dd HH:mm';
     var dt = DateFormat(dtCsFormat).parse(dts);
-    //var dt = dateFormat.parse(dts);
     return DateFormat(dtCsFormat2).format(dt);
   }
 
@@ -41,9 +47,11 @@ class DateUt {
   static DateTime? csToDt(String dt) {
       if (StrUt.isEmpty(dt)) return null;
 
-      return DateTime.parse(dt.replaceAll('/', '-'));
-      //DateTime.TryParseExact(dt, _Fun.CsDtFmt, CultureInfo.InvariantCulture, DateTimeStyles.None, out var dt2);
-      //return dt2;
+      try {
+        return DateTime.parse(dt.replaceAll('/', '-'));
+      } catch (error){
+        return null;
+      }  
   }
   
   static String timeToStr(TimeOfDay time){
@@ -61,6 +69,29 @@ class DateUt {
       //var cols = date!.split(' ');
       dateCtrl.text = date.substring(0, pos);
       timeCtrl.text = date.substring(pos + 1);
+    }
+  }
+
+  //get date string
+  static String toDateStr(DateTime dt){
+    return DateFormat(dateCsFormat).format(dt);
+  }
+
+  //get time string
+  static String toTimeStr(DateTime dt){
+    return DateFormat.Hm().format(dt);
+  }
+
+  //get time string
+  static void setCtrlText(TextEditingController ctrl, bool setNow){
+    var isEmpty = StrUt.isEmpty(ctrl.text);
+    if (setNow && isEmpty) {
+      ctrl.text = DateUt.toDateStr(DateTime.now());
+    } else if (!isEmpty){
+      var dt = csToDt(ctrl.text);
+      if (dt == null || dt.year < 1900){
+        ctrl.text = '';
+      }
     }
   }
 

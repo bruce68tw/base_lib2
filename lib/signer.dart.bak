@@ -1,11 +1,19 @@
-// ignore_for_file: library_prefixes, use_build_context_synchronously
+//import 'services/tool_ut.dart';
+//import 'services/widget.dart';
+// ignore_for_file: library_prefixes
 
-//import 'package:image/image.dart' as DiImage;  //dart image
+//import 'dart:ui' as ui;
+//import 'dart:typed_data';
 import 'package:base_lib/all.dart';
 import 'package:flutter/material.dart';
+//import 'package:flutter/services.dart';
+//import 'package:image/image.dart' as DiImage;  //dart image
+//import 'package:flutter_svg/flutter_svg.dart';
 import 'package:signature/signature.dart';
 
-//signature to image file
+//import 'services/widget.dart';
+
+//signature
 class Signer extends StatefulWidget {
   const Signer({Key? key, required this.labelSave, required this.labelClear, 
     required this.savePath, required this.fnOnSignA}) : super(key: key);
@@ -25,25 +33,98 @@ class SignerState extends State<Signer> {
   final _repaintKey = GlobalKey();  //for save signature
 
   final SignatureController _signCtrl = SignatureController(
-    penStrokeWidth: 4,          //畫筆寬度
-    penColor: Colors.black,   //畫筆顏色
+    penStrokeWidth: 4 ,
+    penColor: Colors.black,
+    
+    //exportBackgroundColor: Colors.white,
+    //exportPenColor: Colors.black,
+    //onDrawStart: () => print('onDrawStart called!'),
+    //onDrawEnd: () => print('onDrawEnd called!'),
   );
 
   late Signature _signCanvas;
 
-  /*
   @override
   void initState() {
     super.initState();
-    //_signCtrl.addListener(()=> print('Value changed'));
+    _signCtrl.addListener(()=> print('Value changed'));
+
+    /*
+    //set Orientation landscape
+    SystemChrome.setPreferredOrientations([
+      //DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+      DeviceOrientation.landscapeLeft,
+    ]);
+    */
   }
-  */
 
   @override
   void dispose() {
     _signCtrl.dispose();
     super.dispose();
+
+    /*
+    //restore Orientation
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
+    */
   }
+
+  /*
+  Future<void> exportImage(BuildContext context) async {
+    if (_signCtrl.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('No content')));
+      return;
+    }
+
+    final Uint8List? data = await _signCtrl.toPngBytes();
+    if (data == null) {
+      return;
+    }
+
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: Center(
+              child: Container(
+                color: Colors.grey[300],
+                child: Image.memory(data),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> exportSVG(BuildContext context) async {
+    if (_signCtrl.isEmpty) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('No content')));
+      return;
+    }
+
+    final SvgPicture data = _signCtrl.toSVG()!;
+
+    await Navigator.of(context).push(
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) {
+          return Scaffold(
+            appBar: AppBar(),
+            body: Center(
+              child: Container(color: Colors.grey[300], child: data),
+            ),
+          );
+        },
+      ),
+    );
+  }
+  */
 
   /*
   //使用
@@ -99,6 +180,11 @@ class SignerState extends State<Signer> {
       backgroundColor: Colors.white,
     );
 
+    /*
+    return MaterialApp(
+      home: Builder(
+        builder: (BuildContext context) => 
+        */
     return Scaffold(
       body: RotatedBox(
         quarterTurns: 1,
@@ -115,8 +201,6 @@ class SignerState extends State<Signer> {
                 child: Expanded(
                   child: _signCanvas
               )),
-
-              //2個功能按鈕
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 //mainAxisAlignment: MainAxisAlignment.center,

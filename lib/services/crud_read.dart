@@ -21,12 +21,12 @@ class CrudRead {
   //CrudRead() {
   //}
   
-  Future<Map<String, dynamic>?> getPageBySqlAsync(String sql, DtDto dtDto) async {
+  Future<Map<String, dynamic>?> getPageBySqlA(String sql, DtDto dtDto) async {
     var readDto = ReadDto(readSql: sql);
-    return await getPageAsync(readDto, dtDto);
+    return await getPageA(readDto, dtDto);
   }
 
-  Future<Map<String, dynamic>?> getPageAsync(ReadDto readDto, DtDto dtDto) async {
+  Future<Map<String, dynamic>?> getPageA(ReadDto readDto, DtDto dtDto) async {
       //#region 1.check input
       dtDto.length = PageUt.getPageRows(dtDto.length);
       //#endregion
@@ -37,7 +37,7 @@ class CrudRead {
 
       //prepare sql where & set sql args by user input condition
       //var search = (dtDto.search == null) ? "" : dtDto.search.value;
-      var where = await getWhereAsync(readDto, StrUt.toJson(dtDto.findJson));
+      var where = await getWhereA(readDto, StrUt.toJson(dtDto.findJson));
       if (where == _errorCode) return JsonUt.getError();
       //else if(where == "-2")
       //    return _Json.GetBrError(_Fun.TimeOutFid);
@@ -61,7 +61,7 @@ class CrudRead {
               sqlDto.from + " " +
               sqlDto.where +
               group;
-          var row = await DbUt.getJsonAsync(sql, _sqlArgs); //for log carrier
+          var row = await DbUt.getJsonA(sql, _sqlArgs); //for log carrier
           if (row == null) {
             return {
               //'draw': dtDto.draw,
@@ -88,7 +88,7 @@ class CrudRead {
 
       //#region 5.get page rows 
       sql = SqlUt.dtoToSql(sqlDto, dtDto.start, dtDto.length);
-      var rows = await DbUt.getJsonsAsync(sql, _sqlArgs);
+      var rows = await DbUt.getJsonsA(sql, _sqlArgs);
       //#endregion
 
   //lab_exit:
@@ -108,7 +108,7 @@ class CrudRead {
       _sqlArgs.add(value);
   }
 
-  Future<String> getWhereAsync(ReadDto readDto, Map<String, dynamic>? findJson) async {
+  Future<String> getWhereA(ReadDto readDto, Map<String, dynamic>? findJson) async {
 
       //#region set variables
       //var groupLen = 0; //(readDto.orGroups == null || readDto.OrGroups.Count == 0) ? 0 : readDto.OrGroups.Count;

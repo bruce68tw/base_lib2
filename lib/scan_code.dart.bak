@@ -4,7 +4,7 @@ import 'package:qr_code_scanner/qr_code_scanner.dart';
 import 'services/tool_ut.dart';
 import 'services/widget.dart';
 
-//scan qrCode & barCode
+//scan qr code & bar code
 class ScanCode extends StatefulWidget {
   const ScanCode({Key? key, required this.title}) : super(key: key);
   final String title;

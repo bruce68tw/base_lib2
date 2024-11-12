@@ -107,19 +107,6 @@ class StrUt {
         .substring(0, 10);
   }
 
-  //將字串中的數字轉全形 for 地址查詢
-  static String toFullType(String input) {
-    var list = ['０','１','２','３','４','５','６','７','８','９'];
-    var len = input.length;
-    var result = '';
-    for(var i=0; i<len; i++){
-      var str = input.substring(i, i+1);  //start,len
-      var num = int.tryParse(str);
-      result += (num == null) ? str : list[num];
-    }
-    return result;
-  }
-
   /*
   //字串轉全形
   static String toFullType(String str) {

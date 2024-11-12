@@ -8,7 +8,7 @@ class CanvasUt {
   //static const _dtCsFormat = 'yyyy/MM/dd HH:mm:ss';
   //static const _dtCsFormat2 = 'yyyy/MM/dd HH:mm';
 
-  static Future<ui.Image> loadImageAsync(var path) async {
+  static Future<ui.Image> loadImageA(var path) async {
     ByteData data = await rootBundle.load(path);
     ui.Codec codec = await ui.instantiateImageCodec(data.buffer.asUint8List(),targetWidth: 300,targetHeight: 300);
     ui.FrameInfo fi = await codec.getNextFrame();

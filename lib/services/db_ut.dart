@@ -1,4 +1,4 @@
-import 'package:collection/collection.dart';
+import 'package:collection/collection.dart';  //need !!
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import '../models/id_str_dto.dart';
@@ -18,7 +18,7 @@ class DbUt {
     _createSqls = createSqls;
   }
 
-  static Future<Database> getDbAsync() async {
+  static Future<Database> getDbA() async {
     if (_db != null) return _db!;
 
     // lazily instantiate the db the first time it is accessed
@@ -40,9 +40,9 @@ class DbUt {
   }
 
   // re-create table 
-  static Future<void> reTableAsync(String table) async {
+  static Future<void> reTableA(String table) async {
     //drop table
-    var db = await getDbAsync();
+    var db = await getDbA();
     await db.execute("Drop Table if exists $table");
 
     //create table
@@ -53,9 +53,9 @@ class DbUt {
   }
 
   /// insert
-  static Future<bool> insertAsync(String table, Map<String, dynamic> map) async {
+  static Future<bool> insertA(String table, Map<String, dynamic> map) async {
     //db.insert return row sn
-    var db = await getDbAsync();
+    var db = await getDbA();
     var count = await db.insert(table, map,
       conflictAlgorithm: ConflictAlgorithm.fail
     );
@@ -63,11 +63,11 @@ class DbUt {
   }
 
   /// update
-  static Future<bool> updateAsync(String table, Map<String, dynamic> map, 
+  static Future<bool> updateA(String table, Map<String, dynamic> map, 
     String where, List<Object> args) async {
       
     //db.update return rows affected
-    var db = await getDbAsync();
+    var db = await getDbA();
     var count = await db.update(table, map,
         where: where,
         whereArgs: args,
@@ -77,42 +77,38 @@ class DbUt {
   }
 
   /// delete one/many rows
-  static Future<int> deleteAsync(String table, String where, [List<Object>? args]) async {      
+  static Future<int> deleteA(String table, String where, [List<Object>? args]) async {      
     //db.delete return rows affected
-    var db = await getDbAsync();
-    var count = await db.delete(table, 
-        where: where,
-        whereArgs: args,
-    );
-    return count;
+    var db = await getDbA();
+    return await db.delete(table, where: where, whereArgs: args);
   }
 
   //query below
-  static Future<int> getCountAsync(String sql) async {
-    var db = await getDbAsync();
+  static Future<int> getCountA(String sql) async {
+    var db = await getDbA();
     var count = Sqflite.firstIntValue(await db.rawQuery(sql));
     return count ?? 0;
   }
 
-  static Future<Map<String, dynamic>?> getJsonAsync(String sql, [List<dynamic>? args]) async {
-    var db = await getDbAsync();
+  static Future<Map<String, dynamic>?> getJsonA(String sql, [List<dynamic>? args]) async {
+    var db = await getDbA();
     var rows = await db.rawQuery(sql, (args == null || args.isEmpty) ? null : args);
     return (rows.isEmpty)
       ? null : rows[0];
   }
 
-  static Future<List<Map<String, dynamic>>> getJsonsAsync(String sql, [List<dynamic>? args]) async {
-    var db = await getDbAsync();
+  static Future<List<Map<String, dynamic>>> getJsonsA(String sql, [List<dynamic>? args]) async {
+    var db = await getDbA();
     return await db.rawQuery(sql, (args == null || args.isEmpty) ? null : args);
   }
 
-  static Future<List<IdStrDto>> getIdStrsAsync(String sql) async {
-    var db = await getDbAsync();
+  static Future<List<IdStrDto>> getIdStrsA(String sql) async {
+    var db = await getDbA();
     return JsonUt.rowsToIdStrs(await db.rawQuery(sql));
   }
 
   /// close db
-  static Future closeAsync() async {
+  static Future closeA() async {
     if (_db != null) await _db!.close();
   }
 

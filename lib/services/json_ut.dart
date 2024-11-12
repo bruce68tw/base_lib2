@@ -64,7 +64,7 @@ class JsonUt {
   }
 
   /// convert Map<String, dynamic> to Map<String, String>
-  static Map<String, String>? dynamicToString(Map<String, dynamic>? json) {
+  static Map<String, String>? dynamicToStr(Map<String, dynamic>? json) {
     return (json == null)
       ? null
       : json.map((key, value) => MapEntry(key, value.toString()));

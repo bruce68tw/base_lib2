@@ -30,11 +30,12 @@ class HttpUt {
         : Uri.http(FunUt.apiServer, action, json);
   }
 
-  //get url string
-  //param action : no left slash
-  static String getUrl(String action) {
-    return (FunUt.isHttps ? 'https://' : 'http://') + FunUt.apiServer + '/' + action;
+  /*
+  static String _apiUrl(String action) {
+    var uri = _apiUrl(action);
+    return uri.toString();
   }
+  */
 
   /// get str
   /// if jsonArg=false, json must be <String, String> !!
@@ -46,7 +47,7 @@ class HttpUt {
 
   static Future<void> getJsonA(BuildContext context, String action, bool jsonArg, 
       Map<String, dynamic> json, Function fnOk, 
-      {File? file, bool showWait = true}) async {
+      [File? file, bool showWait = true]) async {
     await _getRespResultA(context, action, jsonArg, true, json, fnOk, file, showWait);
   }
 

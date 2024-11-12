@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously, prefer_interpolation_to_compose_strings
+
 import 'package:flutter/material.dart';
 import 'all.dart';
 
@@ -6,10 +8,10 @@ class Sqlite extends StatefulWidget {
   //final String dbName;
 
   @override
-  _SqliteState createState() => _SqliteState();
+  SqliteState createState() => SqliteState();
 }
 
-class _SqliteState extends State<Sqlite> {  
+class SqliteState extends State<Sqlite> {  
   bool _isOk = false;       //state variables
   late PagerSrv _pagerSrv;  //pager service
   //late PagerDto<DeptItemDto> _pagerDto;
@@ -26,14 +28,14 @@ class _SqliteState extends State<Sqlite> {
   @override
   void initState() {
     //initial variables
-    _pagerSrv = PagerSrv(getPageAsync);
+    _pagerSrv = PagerSrv(getPageA);
 
     super.initState();
-    Future.delayed(Duration.zero, ()=> initAsync());
+    Future.delayed(Duration.zero, ()=> initA());
   }
 
   //run one time
-  Future initAsync() async {
+  Future<void> initA() async {
     //read table list
     var sql = '''
 select name as Id, name as Str 
@@ -43,18 +45,18 @@ and name not like 'sqlite%'
 and name not like 'android%'
 order by name
 ''';
-    _tables = await DbUt.getIdStrsAsync(sql);
+    _tables = await DbUt.getIdStrsA(sql);
     _table = _tables.first.id;
     _isOk = true;
-    await showAsync();
+    await showA();
   }
 
   //called by: 1.initAsync, 2.change table
-  Future showAsync() async {
+  Future<void> showA() async {
     //get order string from primary key if need
     if (_tableSql.isEmpty || _tableSql[_table] == null){
       var sql = "select name, type from pragma_table_info('$_table') where pk";
-      var rows = await DbUt.getJsonsAsync(sql);
+      var rows = await DbUt.getJsonsA(sql);
       var order = rows.map((a)=> a['name']).toList().join(',');
       if (order == ''){
         ToolUt.msg(context, 'Primary Key 不存在。');
@@ -67,12 +69,12 @@ order by name
       _sql = _tableSql[_table]!;
     }
 
-    await getPageAsync();
+    await getPageA();
   }
 
   /// get page rows
-  Future getPageAsync() async {
-    var json = await CrudRead().getPageBySqlAsync(_sql, _pagerSrv.getDtJson());
+  Future<void> getPageA() async {
+    var json = await CrudRead().getPageBySqlA(_sql, _pagerSrv.getDtJson());
     if (json == null) return;
 
     _rows = (json['data'] == null) ? [] : json['data'] as List<Map<String, dynamic>>;
@@ -102,7 +104,7 @@ order by name
     //table name & divider
     widgets.add(WG.iselect('資料表', _table, _tables, (value) async {
       _table = value;
-      await showAsync();
+      await showA();
     }));
     //widgets.add(WG.divider(15));
 

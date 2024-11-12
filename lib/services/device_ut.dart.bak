@@ -1,4 +1,5 @@
 //import 'package:device_info/device_info.dart';
+import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:airplane_mode_checker/airplane_mode_checker.dart';
 import '../models/gps_dto.dart';
@@ -17,7 +18,7 @@ class DeviceUt {
 
   /// get gps position
   /// tailLen: 經緯度小數點後面字串長度, 不指定則使用預設
-  static Future<GpsDto> getGpsAsync([int? tailLen]) async {
+  static Future<GpsDto> getGpsA([int? tailLen]) async {
     var status = await Geolocator.isLocationServiceEnabled();
     if (status) {
       var auth = await Geolocator.checkPermission();
@@ -31,7 +32,7 @@ class DeviceUt {
       }
 
       //高精度會使用高耗能
-      var pos = await isAirplaneModeAsync()
+      var pos = await isAirplaneModeA()
         ? await Geolocator.getLastKnownPosition()
         : await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
       if (pos == null){
@@ -60,9 +61,17 @@ class DeviceUt {
   }
 
   /// 是否開啟飛航模式
-  static Future<bool> isAirplaneModeAsync() async {
+  static Future<bool> isAirplaneModeA() async {
     var status = await AirplaneModeChecker.checkAirplaneMode();
     return (status == AirplaneModeStatus.on);
   }
+
+  static double getWidth(BuildContext context) {
+    return MediaQuery.of(context).size.width;
+  }
+  static double getHeight(BuildContext context) {
+    return MediaQuery.of(context).size.height;
+  }
+
 
 } //class

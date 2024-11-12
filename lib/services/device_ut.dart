@@ -2,6 +2,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:airplane_mode_checker/airplane_mode_checker.dart';
+//import 'package:package_info_plus/package_info_plus.dart';
+import 'package:package_info/package_info.dart';
 import '../models/gps_dto.dart';
 
 //static class, cannot use _Fun
@@ -18,7 +20,7 @@ class DeviceUt {
 
   /// get gps position
   /// tailLen: 經緯度小數點後面字串長度, 不指定則使用預設
-  static Future<GpsDto> getGpsAsync([int? tailLen]) async {
+  static Future<GpsDto> getGpsA([int? tailLen]) async {
     var status = await Geolocator.isLocationServiceEnabled();
     if (status) {
       var auth = await Geolocator.checkPermission();
@@ -32,7 +34,7 @@ class DeviceUt {
       }
 
       //高精度會使用高耗能
-      var pos = await isAirplaneModeAsync()
+      var pos = await isAirplaneModeA()
         ? await Geolocator.getLastKnownPosition()
         : await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.low);
       if (pos == null){
@@ -61,7 +63,7 @@ class DeviceUt {
   }
 
   /// 是否開啟飛航模式
-  static Future<bool> isAirplaneModeAsync() async {
+  static Future<bool> isAirplaneModeA() async {
     var status = await AirplaneModeChecker.checkAirplaneMode();
     return (status == AirplaneModeStatus.on);
   }
@@ -73,5 +75,14 @@ class DeviceUt {
     return MediaQuery.of(context).size.height;
   }
 
+  //is android or not
+  static bool isAndroid(BuildContext context) {
+    return (Theme.of(context).platform == TargetPlatform.android);
+  }
+
+  static Future<String> getVersionA() async {
+    var info = await PackageInfo.fromPlatform();
+    return info.version;
+  }
 
 } //class

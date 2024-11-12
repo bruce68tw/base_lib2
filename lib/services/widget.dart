@@ -7,17 +7,36 @@ import 'all.dart';
 //static class
 class WG {
 
-  //get text widget
-  //color: for status=true only
-  static Text getText(String text, [bool status = true, Color? color]) {
-    return Text(text, style:textStyle(status, color));
+
+  static AppBar appBar(String title) {
+    return AppBar(title: Text(title));
+  }
+
+  /// get text widget
+  /// color: for status=true only
+  static Text getText(String text, {bool status = true, Color? color}) {
+    return Text(text, style:textStyle(status:status, color:color));
+  }
+
+  static Text getRedText(String text) {
+    return Text(text, style:textStyle(color: Colors.red));
   }
 
   /// get text widget with label style
-  static Text getLabel(String? label) {
-    return Text(label ?? '', style:FunUt.labelStyle);
+  static Text getLabel(String? label, { Color? color }) {
+    return Text(label ?? '', style: (color == null) 
+      ? FunUt.labelStyle
+      : TextStyle(
+        fontSize: FunUt.fontSize,
+        color: color
+      ));
   }
 
+  static Text getRedLabel(String label) {
+    return getLabel(label, color: Colors.red);
+  }
+
+  /*
   /// get label with color
   static Text getLabel2(String label, Color color) {
     return Text(label, style:TextStyle(
@@ -25,6 +44,7 @@ class WG {
       color: color
     ));    
   }
+  */
 
   static Widget centerText(String text) {
     return Center(
@@ -53,7 +73,7 @@ class WG {
   }
 
   ///input field style, consider status
-  static TextStyle textStyle([bool status = true, Color? color]) {    
+  static TextStyle textStyle({bool status = true, Color? color}) {    
     return TextStyle(
       color: !status ? FunUt.textColorRead : 
         (color == null) ? FunUt.textColorEdit : color,
@@ -62,30 +82,13 @@ class WG {
   }
 
   //return label
-  static InputDecoration inputDecore(String label, [bool? lowHeight]) {
+  static InputDecoration inputDecore(String label) {
     var errorStyle = TextStyle(
       fontSize: FunUt.errorFontSize,
     );
-    if (lowHeight == null){
-      return InputDecoration(
-        errorStyle: errorStyle
-      );
-    } else {
-      return lowHeight
-        ? InputDecoration(
-            //labelText: label,
-            //labelStyle: FunUt.decoreStyle,
-            isDense: true,
-            errorStyle: errorStyle,
-            contentPadding: const EdgeInsets.symmetric(vertical: 5))
-        : InputDecoration(
-            //labelText: label,
-            //labelStyle: FunUt.decoreStyle),
-            //isDense: true,
-            //contentPadding: EdgeInsets.symmetric(vertical: 5)
-            errorStyle: errorStyle
-            );
-    }
+    return InputDecoration(
+      errorStyle: errorStyle
+    );
   }
 
   ///gap for padding or margin
@@ -122,8 +125,8 @@ class WG {
     //var color = status
     //  ? Colors.blue : Colors.grey;
     return TextButton(
-      child: Text(text),
       onPressed: (fnOnClick == null) ? null : ()=> fnOnClick(),
+      child: Text(text),
     ); 
   }
 
@@ -135,11 +138,11 @@ class WG {
     //var color = status
     //  ? Colors.blue : Colors.grey;
     return ElevatedButton(
-      child: Text(text),
       onPressed: (fnOnClick == null) ? null : ()=>fnOnClick(),
       style: (bgColor == null) 
         ? null 
-        : ElevatedButton.styleFrom( foregroundColor: fontColor, backgroundColor: bgColor)
+        : ElevatedButton.styleFrom( foregroundColor: fontColor, backgroundColor: bgColor),
+      child: Text(text)
     ); 
   }
 
@@ -178,35 +181,32 @@ class WG {
   */
 
   /// tableRow with 2 widgets
-  /// param lowHeight: null(不設定高度, 系統預設),true(最小高度),false(設定正常高度)
+  /// //param lowHeight: null(不設定高度, 系統預設),true(最小高度),false(系統指定高度(可改變))
   static TableRow tableRow2(String label, Widget input, 
-    {bool required = false, bool? lowHeight}){
+    {bool required = false, bool setHeight = true}){
 
-    if (lowHeight == null){
-      return TableRow(children: [
+    return TableRow(children: [
+      if (setHeight)...[
+        //設定最小高度
         TableCell(
-          verticalAlignment: TableCellVerticalAlignment.middle,
-          child: reqLabel(label, required)),
+          verticalAlignment: TableCellVerticalAlignment.middle,   //work !!
+          child: reqLabel(label, required)
+          /*
+          child: ConstrainedBox(
+            constraints: BoxConstraints( minHeight: FunUt.fieldHeight ),
+            child: reqLabel(label, required)
+        )*/),
         TableCell(
-          verticalAlignment: TableCellVerticalAlignment.middle,
-          child: input
-      )]);
-    } else {
-      var height = lowHeight ? FunUt.fieldHeightLow : FunUt.fieldHeight;
-      return TableRow(children: [
-        TableCell(
-          verticalAlignment: TableCellVerticalAlignment.middle,
-          child: SizedBox(
-            child: reqLabel(label, required), 
-            height: height
-        )),
-        TableCell(
-          verticalAlignment: TableCellVerticalAlignment.middle,
-          child: SizedBox(
-            child: input, 
-            height: height
-      ))]);
-    }
+          //verticalAlignment: TableCellVerticalAlignment.top,  //not work !!
+          child: ConstrainedBox(
+            constraints: BoxConstraints( minHeight: FunUt.fieldHeight ),
+            child: input
+        ))
+      ] else...[
+        TableCell( child: reqLabel(label, required)),
+        TableCell( child: input )
+      ] 
+    ]);
   }
 
   /// required label
@@ -215,59 +215,59 @@ class WG {
       ? Row(
           mainAxisAlignment: MainAxisAlignment.start,
           //crossAxisAlignment: CrossAxisAlignment.end, //使用center位置會往下掉!!
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            getLabel2('*', Colors.red),
             getLabel(label),
+            getRedLabel('*'),
           ]
         )
       : getLabel(label);
   }
 
-  static TableRow ilabel2(String label, [String? text, bool? lowHeight = false]){
-    return tableRow2(label, getLabel(text), lowHeight: lowHeight);
+  static TableRow ilabel2(String label, [String? text]){
+    return tableRow2(label, getLabel(text));
   }
 
   static Widget itext(String label, TextEditingController ctrl,  
     {bool status = true, bool required = false, int maxLines = 1, 
-    bool isPwd = false, bool? lowHeight, String? initValue,
+    bool isPwd = false, /*String? initValue,*/
     Function? fnValid, Function? fnOnChange}){
     
     return _textWidget(label, ctrl,  
       status: status, required: required, maxLines:maxLines, 
-      isPwd: isPwd, lowHeight: lowHeight, initValue: initValue,
+      isPwd: isPwd, /*initValue: initValue,*/
       fnValid: fnValid, fnOnChange:fnOnChange);
   }
 
   static TableRow itext2(String label, TextEditingController ctrl,  
     {bool status = true, bool required = false, int maxLines = 1, 
-    bool isPwd = false, bool? lowHeight, String? initValue,
+    bool isPwd = false, /*String? initValue,*/
     Function? fnValid, Function? fnOnChange}){
 
     return tableRow2(label, itext('', ctrl, status: status, required: required, maxLines: maxLines, 
-        initValue: initValue, isPwd: isPwd, lowHeight:lowHeight, fnValid: fnValid, fnOnChange: fnOnChange),
-      required: required, lowHeight: lowHeight);
+        /*initValue: initValue,*/ isPwd: isPwd, fnValid: fnValid, fnOnChange: fnOnChange),
+      required: required);
   }
 
   static Widget inum(String label, TextEditingController ctrl,  
     {bool status = true, bool required = false, int maxLines = 1, 
-    bool isDecimal = false, bool canZero = false, bool? lowHeight, 
+    bool isDecimal = false, bool canZero = false, 
     Function? fnValid, Function? fnOnChange}){
     
     return _textWidget(label, ctrl,  
       status: status, required: required, maxLines:maxLines, 
-      isDecimal: isDecimal, canZero: canZero, isPwd: false, lowHeight: lowHeight, 
+      isDecimal: isDecimal, canZero: canZero, isPwd: false, 
       fnValid: fnValid, fnOnChange:fnOnChange);
   }
 
   static TableRow inum2(String label, TextEditingController ctrl,  
     {bool status = true, bool required = false, int maxLines = 1, 
-    bool isDecimal = false, bool canZero = false, bool? lowHeight, 
+    bool isDecimal = false, bool canZero = false,
     Function? fnValid, Function? fnOnChange}){
 
     return tableRow2(label, inum('', ctrl, status: status, required: required, maxLines: maxLines, 
-        isDecimal: isDecimal, canZero: canZero, lowHeight:lowHeight, fnValid: fnValid, fnOnChange: fnOnChange),
-      required: required, lowHeight: lowHeight);
+        isDecimal: isDecimal, canZero: canZero, fnValid: fnValid, fnOnChange: fnOnChange),
+      required: required);
   }
 
   //=== input field below ===
@@ -275,15 +275,16 @@ class WG {
   /// @param canZero: (for num only)
   /// @param isPwd: (for text only)
   static Widget _textWidget(String label, TextEditingController ctrl,  
-    {bool status = true, bool required = false, int maxLines = 1, String? initValue,
-    bool? isDecimal, bool canZero = false, bool isPwd = false, bool? lowHeight, 
+    {bool status = true, bool required = false, int maxLines = 1, /*String? initValue,*/
+    bool? isDecimal, bool canZero = false, bool isPwd = false, 
     Function? fnValid, Function? fnOnChange}){
         
-    if (StrUt.notEmpty(initValue)){
-      ctrl.text = initValue!;
-    }
+    //if (StrUt.notEmpty(initValue)){
+    //  ctrl.text = initValue!;
+    //}
     return TextFormField(
       controller: ctrl,
+      //textAlignVertical: TextAlignVertical.center,
       //initialValue: initValue,
       keyboardType: (isDecimal == null) ? TextInputType.text : 
         TextInputType.numberWithOptions(decimal: isDecimal),
@@ -294,9 +295,16 @@ class WG {
         //[FilteringTextInputFormatter.digitsOnly],
 
       readOnly: !status,
-      style: textStyle(status),
+      style: textStyle(status: status),
       //decoration: (label == '') ? null : inputDecore(label, lowHeight),
-      decoration: inputDecore(label, lowHeight),
+      //decoration: inputDecore(label),
+      decoration: const InputDecoration(
+        //isDense: true,
+        //hasFloatingPlaceholder: true,
+        //labelText: 'Select Contact Name',
+        //contentPadding: EdgeInsets.symmetric(vertical: 5),
+        contentPadding: EdgeInsets.only(bottom: 8),
+      ),
       minLines: 1,
       maxLines: maxLines,
 
@@ -311,14 +319,25 @@ class WG {
       validator: (value) {
         //flutter判斷式會全部檢查, 必須分開
         var isEmpty = StrUt.isEmpty(value);
+        if (isEmpty){
+          return required
+            ? FunUt.notEmpty : null;
+        } 
+
+        /*
         if (isDecimal != null && !canZero && !isEmpty){
           if ((isDecimal && double.parse(value!) == 0) || (!isDecimal && int.parse(value!) == 0 )){
             return FunUt.notZero;
           }
         }
+        */
+        if (isDecimal != null){
+          if ((isDecimal && double.tryParse(value!) == null) || (!isDecimal && int.tryParse(value!) == null)){
+            return FunUt.onlyNum;
+          }
+        }
 
-        return (required && isEmpty) ? FunUt.notEmpty :
-          (fnValid == null) ? null : 
+        return (fnValid == null) ? null : 
           fnValid(value);          
       },
     );
@@ -327,17 +346,24 @@ class WG {
   /// select option(dropdown)
   /// DropdownButtonFormField 才有 validate, DropdownButton 沒有
   static Widget iselect(String label, dynamic value, List<IdStrDto> rows, Function? fnOnChange,
-    {bool status = true, bool required = false, bool? lowHeight, Function? fnValid}){
+    {bool status = true, bool required = false, Function? fnValid}){
 
     var value2 = rows.isEmpty ? '' :
-      ListUt.missOrFirst(rows, value);
+      ListUt.findOrFirst(rows, value.toString());
 
     return DropdownButtonFormField<String>(
       isExpanded: true,
       value: value2,
-      style: textStyle(status),
+      style: textStyle(status: status),
       //decoration: (label == '') ? null : inputDecore(label, lowHeight),
-      decoration: inputDecore(label, lowHeight),
+      //decoration: inputDecore(label),
+      decoration: const InputDecoration(
+        //isDense: true,
+        //hasFloatingPlaceholder: true,
+        //labelText: 'Select Contact Name',
+        //contentPadding: EdgeInsets.symmetric(vertical: 5),
+        contentPadding: EdgeInsets.only(bottom: 4),
+      ),
       items: rows.map((IdStrDto row) {
         return DropdownMenuItem<String>(
           value: row.id,
@@ -351,32 +377,34 @@ class WG {
         return (required && StrUt.isEmpty(value2)) ? FunUt.notEmpty :
           (fnValid == null) ? null : 
           fnValid(value2);          
-      },
-    );
+    });
   }
 
   static TableRow iselect2(String label, dynamic value, List<IdStrDto> rows, Function? fnOnChange,
-    {bool status = true, bool required = false, bool? lowHeight, Function? fnValid}){
+    {bool status = true, bool required = false, Function? fnValid}){
 
     return tableRow2(label, iselect('', value, rows, fnOnChange, status:status, 
-      required:required, lowHeight:lowHeight, fnValid:fnValid), 
-      required: required, lowHeight: lowHeight);
+      required:required, fnValid:fnValid), 
+      required: required);
   }
 
   /// date input
   /// fnOnChange : must be (value)=>
   static Widget idate(BuildContext context, String label, TextEditingController ctrl,  
     Function fnOnChange, {bool status = true, bool required = false, 
-    bool lowHeight = false, bool oneYearRange = true}){
+    bool oneYearRange = true, bool setNow = true}){
 
     var days = oneYearRange ? 356 : 36500;
     var today = DateTime.now();
+    //日期字串如果不正確會error, 所以先做檢查
+    //if (setNow && StrUt.isEmpty(ctrl.text)) ctrl.text = DateUt.toDateStr(today);
+    DateUt.setCtrlText(ctrl, setNow);
     return TextFormField(
       controller: ctrl,
       readOnly: !status,
-      style: textStyle(status),
+      style: textStyle(status: status),
       //decoration: (label == '') ? null : inputDecore(label, lowHeight),
-      decoration: inputDecore(label, lowHeight),
+      decoration: inputDecore(label),
       onTap: status
         ? () async {
           //_nowDate = value;
@@ -400,32 +428,47 @@ class WG {
           //ctrl.text = DateFormat('yyyy/MM/dd').format(_nowDate);
           //setState(() {});
         }
-        : null
+        : null,
+        
+      validator: (value) {
+        var isEmpty = StrUt.isEmpty(value);
+        return (required && isEmpty) ? FunUt.notEmpty : null;
+      },
+
     );
   }
 
   static TableRow idate2(BuildContext context, String label, TextEditingController ctrl,  
     Function fnOnChange, {bool status = true, bool required = false, 
-    bool lowHeight = false, bool oneYearRange = true}){
+    bool oneYearRange = true, bool setNow = true}){
 
-    return tableRow2(label,idate(context, '', ctrl, fnOnChange, status:status, 
-      required:required, lowHeight:lowHeight, oneYearRange:oneYearRange), 
-      required: required, lowHeight: lowHeight);
+    return tableRow2(label, idate(context, '', ctrl, fnOnChange, status:status, 
+      required:required, oneYearRange:oneYearRange,
+      setNow: setNow), 
+      required: required);
   }
 
   /// hour minutes
   static Widget itime(BuildContext context, String label, 
     TextEditingController ctrl, Function fnCallback, 
-    {bool status = true, bool required = false, bool lowHeight = false}){
+    {bool status = true, bool required = false,
+    bool setNow = true}){
 
-    var value = StrUt.isEmpty(ctrl.text) 
-      ? TimeOfDay.now() : DateUt.strToTime(ctrl.text);
+    //var now = DateTime.now();
+    late TimeOfDay value;
+    if (StrUt.isEmpty(ctrl.text)){
+      value = TimeOfDay.now();
+      if (setNow) ctrl.text = DateUt.toTimeStr(DateTime.now());
+    } else {
+      value = DateUt.strToTime(ctrl.text);
+    }
+
     return TextFormField(
       controller: ctrl,
       readOnly: !status,
-      style: textStyle(status),
+      style: textStyle(status: status),
       //decoration: (label == '') ? null : inputDecore(label, lowHeight),
-      decoration: inputDecore(label, lowHeight),
+      decoration: inputDecore(label),
       onTap: status
         ? () async {
           //TimeOfDay.now()
@@ -439,17 +482,23 @@ class WG {
           //callback
           fnCallback(time);
         }
-        : null
+        : null,
+      validator: (value) {
+        var isEmpty = StrUt.isEmpty(value);
+        return (required && isEmpty) ? FunUt.notEmpty : null;
+      },
+
     );
   }
 
   static TableRow itime2(BuildContext context, String label, 
     TextEditingController ctrl, Function fnCallback, 
-    {bool status = true, bool required = false, bool lowHeight = false}){
+    {bool status = true, bool required = false,
+    bool setNow = true}){
 
     return tableRow2(label, itime(context, '', ctrl, fnCallback, status: status, 
-        required:required, lowHeight:lowHeight), 
-      required: required, lowHeight: lowHeight);
+        required:required, setNow:setNow), 
+      required: required);
   }
 
   /// checkbox, 裡面使用sizeBox會很不好點擊 !1 
@@ -474,14 +523,15 @@ class WG {
               onChanged: (bool? value) {
                 fnOnChange(value);        
         }))),
-        getText(label, status, labelColor),
+        getText(label, status: status, color: labelColor),
     ]);
   }
 
+  //text: checkbox tail text
   static TableRow icheck2(String label, bool checked, Function fnOnChange, 
-    {bool status = true}) {
+    {bool status = true, String text = ''}) {
 
-    return tableRow2(label, icheck('', checked, fnOnChange, status:status));
+    return tableRow2(label, icheck(text, checked, fnOnChange, status:status));
   }
 
   static Widget iradio(List<dynamic> labelValues, dynamic value, Function fnOnChange, 
@@ -495,7 +545,7 @@ class WG {
         materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,  //縮小間隔
         onChanged: (val)=> fnOnChange(val)
       ));
-      widgets.add(WG.getText(labelValues[i], status));
+      widgets.add(WG.getText(labelValues[i], status: status));
     }
 
     return Row(
@@ -509,6 +559,23 @@ class WG {
     {bool status = true, bool isCenter = false}) {
 
     return tableRow2(label, iradio(labelValues, value, fnOnChange, status:status, isCenter: isCenter));
+  }
+
+  //vertical gap
+  static Widget vGap([double value = 10]){
+    return SizedBox(height: value);
+  }
+
+  //horizontal gap
+  static Widget hGap([double value = 5]){
+    return SizedBox(width: value);
+  }
+
+  //vertical expand
+  static Widget vExpand(){
+    return const Expanded(
+      child: Text('')
+    );
   }
 
 } //class

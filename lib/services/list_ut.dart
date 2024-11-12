@@ -1,6 +1,7 @@
 
-//static class
+import 'package:collection/collection.dart';  //for firstWhereOrNull
 import '../models/id_str_dto.dart';
+import '../models/id_str2_dto.dart';
 import 'fun_ut.dart';
 import 'str_ut.dart';
 
@@ -27,11 +28,17 @@ class ListUt {
     return rows.indexWhere((a)=> a == find);
   }
 
-  static String missOrFirst(List<IdStrDto> rows, dynamic find) {
+  static String findOrFirst(List<IdStrDto> rows, String? find) {
     var find2 = (find == null) ? '' : find.toString();
     return StrUt.isEmpty(find2) ? firstId(rows) :
       rows.any((a)=> a.id == find2) ? find2 : 
       firstId(rows);
+  }
+
+  static String? findValue(List<IdStrDto> rows, String find) {
+    var row = rows.firstWhereOrNull((a)=> a.id == find);
+    return (row == null)
+      ? null : row.str;
   }
 
   //dart toSet() 無法 distinct, 自行coding
@@ -45,6 +52,15 @@ class ListUt {
       }
     }    
     return data;
+  }
+
+  static List<IdStrDto> filter(List<IdStr2Dto> rows, String ext) {
+    return rows.where((a) => a.ext == ext)
+      .map((a)=> IdStrDto (
+        id: a.id,
+        str: a.str,
+      ))
+      .toList();
   }
 
 } //class

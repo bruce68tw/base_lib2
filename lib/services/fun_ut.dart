@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_interpolation_to_compose_strings
+
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'str_ut.dart';
@@ -12,6 +14,7 @@ class FunUt {
   static const select = '--請選擇--';
   static const notEmpty = '不可空白。';
   static const notZero = '不可為0';
+  static const onlyNum = '只能輸入數字。';
 
   //system config
   static bool logHttpUrl = false;

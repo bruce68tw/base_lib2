@@ -11,14 +11,22 @@ class FunUt {
   
   static const select = '--請選擇--';
   static const notEmpty = '不可空白。';
+  static const notZero = '不可為0';
+  static const onlyNum = '只能輸入數字。';
 
-  static double fontSize = 18.0;
+  //system config
   static bool logHttpUrl = false;
 
-  //label, text & input, consider status
-  //static double textFontSize = 16;
-  static Color textColorOk = Colors.black;
-  static Color textColorSkip = Colors.grey;
+
+  //=== style start ===
+  static double fontSize = 18.0;
+  static double errorFontSize = 16.0;
+  static Color textColorEdit = Colors.black;
+  static Color textColorRead = Colors.grey;
+  static double fieldHeight = 45;
+  static double fieldHeightLow = 35;
+  //=== style end ===
+
 
   //label, also for inputDecoration
   static TextStyle labelStyle = TextStyle(

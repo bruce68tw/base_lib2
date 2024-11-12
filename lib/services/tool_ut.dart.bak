@@ -163,30 +163,7 @@ class ToolUt {
     );
     return (msg == null) ? '' : msg.toString();
   }
-    
-  static Future<void> openInputA(BuildContext context, String title, Function fnOnOk) async {
-    var ctrl = TextEditingController();
-    return showDialog(
-      context: context,
-      builder: (context2) {
-        return AlertDialog(
-          title: Text(title),
-          content: TextField(
-            controller: ctrl,
-            //decoration: InputDecoration(hintText: "Text Field in Dialog"),
-          ),
-          actions: [
-            TextButton(
-              child: const Text('OK'),
-              onPressed: () {
-                var text = ctrl.text;
-                if (text != ''){
-                  closeForm(context2);
-                  fnOnOk(text);
-                }
-    })]);});
-  }
-
+  
   /*
   static void openModal(BuildContext context, Widget form, [bool replace = false]) {
     if (context == null) return;

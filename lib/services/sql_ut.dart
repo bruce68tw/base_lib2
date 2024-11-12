@@ -75,11 +75,8 @@ class SqlUt {
   }
 
   static String dtoToSql(SqlDto dto, int start, int length){
-    var group = (dto.group == "") ? "" : " " + dto.group;
-    var sql = dto.select + " " +
-        dto.from + " " +
-        dto.where + group;
-
+    var group = (dto.group == "") ? "" : " ${dto.group}";
+    var sql = "${dto.select} ${dto.from} ${dto.where}$group";
     var result = "select $sql ${dto.order} limit $start,$length";
     return result.replaceAll("  ", " ");
   }
